@@ -110,8 +110,8 @@ namespace MSDEditor
                         bw.Write(entries[i].Id);                    // ID
                         bw.Write(isUnicode ? FF4Flag : FF3Flag);    // Write flags
                         bw.Write(offset);
-                        int strLength = isUnicode ? Encoding.Unicode.GetByteCount(entries[i].Text) : entries[i].Text.Length;
                         offset += strLength; // increment offset by the length of the text entry
+                        int strLength = isUnicode ? Encoding.Unicode.GetByteCount(entries[i].Text) : Encoding.UTF8.GetByteCount(entries[i].Text);
                     }
 
                     // Write data
