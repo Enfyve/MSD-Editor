@@ -143,10 +143,10 @@
             this.FF3rb.Checked = true;
             this.FF3rb.Location = new System.Drawing.Point(19, 25);
             this.FF3rb.Name = "FF3rb";
-            this.FF3rb.Size = new System.Drawing.Size(79, 17);
+            this.FF3rb.Size = new System.Drawing.Size(82, 17);
             this.FF3rb.TabIndex = 3;
             this.FF3rb.TabStop = true;
-            this.FF3rb.Text = "FF3 (ASCII)";
+            this.FF3rb.Text = "FF3 (UTF-8)";
             this.FF3rb.UseVisualStyleBackColor = true;
             this.FF3rb.CheckedChanged += new System.EventHandler(this.DecodingFormatChanged);
             // 

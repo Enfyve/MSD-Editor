@@ -82,7 +82,7 @@ namespace MSDEditor
                     if (useUnicode)
                         entries.Add(new MSDEntry(indexes[j], Encoding.Unicode.GetString(br.ReadBytes(length))));
                     else
-                        entries.Add(new MSDEntry(indexes[j], Encoding.ASCII.GetString(br.ReadBytes(length))));
+                        entries.Add(new MSDEntry(indexes[j], Encoding.UTF8.GetString(br.ReadBytes(length))));
                 }
             }
 
@@ -121,7 +121,7 @@ namespace MSDEditor
                         if (isUnicode)
                             bytes = Encoding.Unicode.GetBytes(entry.Text);
                         else
-                            bytes = Encoding.ASCII.GetBytes(entry.Text);
+                            bytes = Encoding.UTF8.GetBytes(entry.Text);
                         bw.Write(bytes);
 
                     }
