@@ -30,22 +30,26 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.gridColIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gridColText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.ExportAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImportFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.SaveFile = new System.Windows.Forms.ToolStripMenuItem();
             this.CloseFile = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.FF3rb = new System.Windows.Forms.RadioButton();
             this.FF4rb = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.openedFileName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.gridColIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gridColText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.modifiedState = new System.Windows.Forms.ToolStripStatusLabel();
+            this.importFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -79,6 +83,22 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
+            // gridColIndex
+            // 
+            this.gridColIndex.DataPropertyName = "Id";
+            this.gridColIndex.HeaderText = "Id";
+            this.gridColIndex.Name = "gridColIndex";
+            this.gridColIndex.ReadOnly = true;
+            this.gridColIndex.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // gridColText
+            // 
+            this.gridColText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.gridColText.DataPropertyName = "Text";
+            this.gridColText.HeaderText = "Text";
+            this.gridColText.Name = "gridColText";
+            this.gridColText.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -96,39 +116,63 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenFile,
             this.toolStripSeparator1,
+            this.ExportAs,
+            this.ImportFile,
+            this.toolStripSeparator2,
             this.SaveFile,
             this.CloseFile});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpening);
             // 
             // OpenFile
             // 
             this.OpenFile.Name = "OpenFile";
             this.OpenFile.ShortcutKeyDisplayString = "Ctrl+O";
             this.OpenFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.OpenFile.Size = new System.Drawing.Size(146, 22);
+            this.OpenFile.Size = new System.Drawing.Size(172, 22);
             this.OpenFile.Text = "&Open";
             this.OpenFile.Click += new System.EventHandler(this.OpenFile_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(169, 6);
+            // 
+            // ExportAs
+            // 
+            this.ExportAs.Name = "ExportAs";
+            this.ExportAs.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.ExportAs.Size = new System.Drawing.Size(172, 22);
+            this.ExportAs.Text = "&Export As...";
+            this.ExportAs.Click += new System.EventHandler(this.ExportAs_Click);
+            // 
+            // ImportFile
+            // 
+            this.ImportFile.Name = "ImportFile";
+            this.ImportFile.Size = new System.Drawing.Size(172, 22);
+            this.ImportFile.Text = "Import";
+            this.ImportFile.Click += new System.EventHandler(this.ImportFile_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(169, 6);
             // 
             // SaveFile
             // 
             this.SaveFile.Name = "SaveFile";
             this.SaveFile.ShortcutKeyDisplayString = "Ctrl+S";
             this.SaveFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.SaveFile.Size = new System.Drawing.Size(146, 22);
+            this.SaveFile.Size = new System.Drawing.Size(172, 22);
             this.SaveFile.Text = "&Save";
             this.SaveFile.Click += new System.EventHandler(this.SaveFile_Click);
             // 
             // CloseFile
             // 
             this.CloseFile.Name = "CloseFile";
-            this.CloseFile.Size = new System.Drawing.Size(146, 22);
+            this.CloseFile.Size = new System.Drawing.Size(172, 22);
             this.CloseFile.Text = "&Close";
             this.CloseFile.Click += new System.EventHandler(this.CloseFile_Click);
             // 
@@ -136,6 +180,10 @@
             // 
             this.openFileDialog.DefaultExt = "*.msd";
             this.openFileDialog.Filter = "MSD files|*.msd|All files|*.*";
+            // 
+            // exportFileDialog
+            // 
+            this.exportFileDialog.Filter = "CSV File (*.csv)|*.csv|Excel File(*.xlsx)|*.xlsx";
             // 
             // FF3rb
             // 
@@ -189,26 +237,15 @@
             this.openedFileName.Size = new System.Drawing.Size(79, 17);
             this.openedFileName.Text = "no file loaded";
             // 
-            // gridColIndex
-            // 
-            this.gridColIndex.DataPropertyName = "Id";
-            this.gridColIndex.HeaderText = "Id";
-            this.gridColIndex.Name = "gridColIndex";
-            this.gridColIndex.ReadOnly = true;
-            this.gridColIndex.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // gridColText
-            // 
-            this.gridColText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.gridColText.DataPropertyName = "Text";
-            this.gridColText.HeaderText = "Text";
-            this.gridColText.Name = "gridColText";
-            this.gridColText.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
             // modifiedState
             // 
             this.modifiedState.Name = "modifiedState";
             this.modifiedState.Size = new System.Drawing.Size(0, 17);
+            // 
+            // importFileDialog
+            // 
+            this.importFileDialog.DefaultExt = "*.csv";
+            this.importFileDialog.Filter = "CSV files|*.csv|Excel files|*.xlsx";
             // 
             // MSDEditor
             // 
@@ -246,7 +283,7 @@
         private System.Windows.Forms.ToolStripMenuItem OpenFile;
         private System.Windows.Forms.ToolStripMenuItem SaveFile;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.SaveFileDialog exportFileDialog;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem CloseFile;
         private System.Windows.Forms.RadioButton FF3rb;
@@ -257,6 +294,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn gridColIndex;
         private System.Windows.Forms.DataGridViewTextBoxColumn gridColText;
         private System.Windows.Forms.ToolStripStatusLabel modifiedState;
+        private System.Windows.Forms.ToolStripMenuItem ImportFile;
+        private System.Windows.Forms.ToolStripMenuItem ExportAs;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.OpenFileDialog importFileDialog;
     }
 }
 

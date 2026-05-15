@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CsvHelper.Configuration.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -10,14 +11,16 @@ namespace MSDEditor
 {
     class MSDEntry
     {
-        public string Text { get; set; }
-
+        [Name("Id"), Index(0)]
         public UInt32 Id { get; set; }
 
-        public MSDEntry(UInt32 id, string text)
+        [Name("Text"), Index(1)]
+        public string Text { get; set; }
+
+        public MSDEntry(UInt32 Id, string Text)
         {
-            Id = id;
-            Text = text;
+            this.Id = Id;
+            this.Text = Text;
         }
     }
 
@@ -27,7 +30,7 @@ namespace MSDEditor
         private const UInt32 FF3Flag = 0xCCCC0101;
         private const UInt32 FF4Flag = 0xCCCC0001;
         private string filePath;
-        private List<MSDEntry> entries;
+        public List<MSDEntry> Entries;
 
         public MSDParser(string filePath)
         {
@@ -43,9 +46,9 @@ namespace MSDEditor
             }
         }
 
-        public List<MSDEntry> LoadEntries(bool useUnicode = false)
+        public void LoadEntries(bool useUnicode = false)
         {
-            entries = new List<MSDEntry>();
+            Entries = new List<MSDEntry>();
             using (var fs = File.OpenRead(filePath))
             {
                 var br = new BinaryReader(fs);
@@ -80,18 +83,17 @@ namespace MSDEditor
                         length = (int)(br.BaseStream.Length - offsets[j]);
 
                     if (useUnicode)
-                        entries.Add(new MSDEntry(indexes[j], Encoding.Unicode.GetString(br.ReadBytes(length))));
+                        Entries.Add(new MSDEntry(indexes[j], Encoding.Unicode.GetString(br.ReadBytes(length))));
                     else
-                        entries.Add(new MSDEntry(indexes[j], Encoding.UTF8.GetString(br.ReadBytes(length))));
+                        Entries.Add(new MSDEntry(indexes[j], Encoding.UTF8.GetString(br.ReadBytes(length))));
                 }
             }
 
-            return entries;
         }
 
-        public bool Export(List<MSDEntry> entries, bool isUnicode)
+        public bool Export(bool isUnicode)
         {
-            int offset = 16 + (entries.Count * 12); // 16 bytes header + 12 bytes per entry
+            int offset = 16 + (Entries.Count * 12); // 16 bytes header + 12 bytes per entry
             try 
             { 
                 using (var file = File.Open(filePath, FileMode.Truncate))
@@ -102,20 +104,21 @@ namespace MSDEditor
                     // Write header
                     bw.Write(MSD_Magic);                            // Magic
                     bw.Write(new byte[]{0x00, 0x00, 0x01, 0x00});   // Unknown flags
-                    bw.Write((UInt32)entries.Count);                // number of entries
+                    bw.Write((UInt32)Entries.Count);                // number of Entries
                     bw.Write(0x00000000);                           // zeroes
 
-                    for (int i = 0; i < entries.Count; i++)
+                    for (int i = 0; i < Entries.Count; i++)
                     {
-                        bw.Write(entries[i].Id);                    // ID
+                        bw.Write(Entries[i].Id);                    // ID
                         bw.Write(isUnicode ? FF4Flag : FF3Flag);    // Write flags
                         bw.Write(offset);
+
+                        int strLength = isUnicode ? Encoding.Unicode.GetByteCount(Entries[i].Text) : Encoding.UTF8.GetByteCount(Entries[i].Text);
                         offset += strLength; // increment offset by the length of the text entry
-                        int strLength = isUnicode ? Encoding.Unicode.GetByteCount(entries[i].Text) : Encoding.UTF8.GetByteCount(entries[i].Text);
                     }
 
                     // Write data
-                    foreach (var entry in entries)
+                    foreach (var entry in Entries)
                     {
                         byte[] bytes;
                         if (isUnicode)

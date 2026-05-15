@@ -14,8 +14,10 @@ namespace MSDEditor
     public partial class MSDEditor : Form
     {
         MSDParser parser;
-        string filePath;
+        
         bool fileLoaded = false;
+        string loadedFilePath;
+        
         public MSDEditor()
         {
             InitializeComponent();
@@ -23,8 +25,9 @@ namespace MSDEditor
 
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
-            filePath = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-            ParseMSD(filePath);
+            string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            ParseMSD(droppedFiles[0]);
         }
 
         private void ParseMSD(string filePath)
@@ -33,9 +36,11 @@ namespace MSDEditor
 
             if (parser.IsValidFile())
             {
-                dataGridView1.DataSource = parser.LoadEntries(FF4rb.Checked);
+                parser.LoadEntries(FF4rb.Checked);
+                dataGridView1.DataSource = parser.Entries;
                 fileLoaded = true;
                 openedFileName.Text = Path.GetFileName(filePath);
+                loadedFilePath = filePath;
             }
             else
             {
@@ -59,7 +64,7 @@ namespace MSDEditor
         {
             if (fileLoaded)
             {
-                if (parser.Export(dataGridView1.DataSource as List<MSDEntry>, FF4rb.Checked))
+                if (parser.Export(FF4rb.Checked))
                     modifiedState.Text = "";
                 else
                     MessageBox.Show("Could not save file");
@@ -68,7 +73,7 @@ namespace MSDEditor
 
         private void CloseFile_Click(object sender, EventArgs e)
         {
-            filePath = "";
+            loadedFilePath = "";
             fileLoaded = false;
             dataGridView1.DataSource = new List<MSDEntry>();
             openedFileName.Text = "no file loaded";
@@ -78,7 +83,10 @@ namespace MSDEditor
         private void DecodingFormatChanged(object sender, EventArgs e)
         {
             if (fileLoaded)
-                dataGridView1.DataSource = parser.LoadEntries(FF4rb.Checked);
+            {
+                parser.LoadEntries(FF4rb.Checked); // reload as new format
+                dataGridView1.DataSource = parser.Entries;
+            }                
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -92,6 +100,76 @@ namespace MSDEditor
             }
 
             modifiedState.Text = "(modified)";
+        }
+
+        private void ExportAs_Click(object sender, EventArgs e)
+        {
+            exportFileDialog.FileName = Path.GetFileNameWithoutExtension(loadedFilePath);
+
+            if (exportFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var ext = Path.GetExtension(exportFileDialog.FileName).ToLower();
+                bool exportSuccess = false;
+
+                switch (ext)
+                {
+                    case ".csv":
+                        CSVHandler csvHandler = new CSVHandler();
+                        exportSuccess = csvHandler.Export(exportFileDialog.FileName, parser.Entries);
+                        break;
+                    case ".xlsx":
+                        ExcelHandler excelHandler = new ExcelHandler();
+                        exportSuccess = excelHandler.Export(exportFileDialog.FileName, parser.Entries);
+                        break;
+                    default:
+                        MessageBox.Show("File format not supported");
+                        break;
+                }
+
+                if (!exportSuccess)
+                    MessageBox.Show("There was a problem exporting the file.");
+            }
+        }
+
+        private void ImportFile_Click(object sender, EventArgs e)
+        {
+            if (importFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var ext = Path.GetExtension(importFileDialog.FileName).ToLower();
+
+                bool importSuccess = false;
+                List<MSDEntry> entries = new List<MSDEntry>();
+
+                switch (ext)
+                {
+                    case ".csv":
+                        CSVHandler csvHandler = new CSVHandler();
+                        importSuccess = csvHandler.Import(importFileDialog.FileName, out entries);
+                        break;
+                    case ".xlsx":
+                        ExcelHandler excelHandler = new ExcelHandler();
+                        importSuccess = excelHandler.Import(importFileDialog.FileName, out entries);
+                        break;
+                    default:
+                        MessageBox.Show("File format not supported");
+                        break;
+                }
+
+                
+                if (!importSuccess)
+                    MessageBox.Show("There was a problem importing the file.");
+                else
+                {
+                    parser.Entries = entries;
+                    dataGridView1.DataSource = parser.Entries;
+                }                    
+            }
+        }
+
+        private void fileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            ExportAs.Enabled = fileLoaded;
+            ImportFile.Enabled = fileLoaded;
         }
     }
 }
