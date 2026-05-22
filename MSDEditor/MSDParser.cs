@@ -1,5 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -9,21 +8,6 @@ using System.Threading.Tasks;
 
 namespace MSDEditor
 {
-    class MSDEntry
-    {
-        [Name("Id"), Index(0)]
-        public UInt32 Id { get; set; }
-
-        [Name("Text"), Index(1)]
-        public string Text { get; set; }
-
-        public MSDEntry(UInt32 Id, string Text)
-        {
-            this.Id = Id;
-            this.Text = Text;
-        }
-    }
-
     class MSDParser
     {
         private static readonly byte[] MSD_Magic = { 0x4D, 0x53, 0x44, 0x41 }; // "MSDA"
