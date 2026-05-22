@@ -50,10 +50,13 @@
             this.openedFileName = new System.Windows.Forms.ToolStripStatusLabel();
             this.modifiedState = new System.Windows.Forms.ToolStripStatusLabel();
             this.importFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.langGroupBox = new System.Windows.Forms.GroupBox();
+            this.langComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.langGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -75,11 +78,11 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView1.Location = new System.Drawing.Point(135, 38);
+            this.dataGridView1.Location = new System.Drawing.Point(192, 38);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(653, 387);
+            this.dataGridView1.Size = new System.Drawing.Size(942, 654);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
@@ -107,7 +110,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1146, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -191,10 +194,10 @@
             this.FF3rb.Checked = true;
             this.FF3rb.Location = new System.Drawing.Point(19, 25);
             this.FF3rb.Name = "FF3rb";
-            this.FF3rb.Size = new System.Drawing.Size(82, 17);
+            this.FF3rb.Size = new System.Drawing.Size(135, 17);
             this.FF3rb.TabIndex = 3;
             this.FF3rb.TabStop = true;
-            this.FF3rb.Text = "FF3 (UTF-8)";
+            this.FF3rb.Text = "FF 3 (Lang Dependent)";
             this.FF3rb.UseVisualStyleBackColor = true;
             this.FF3rb.CheckedChanged += new System.EventHandler(this.DecodingFormatChanged);
             // 
@@ -214,7 +217,7 @@
             this.groupBox1.Controls.Add(this.FF4rb);
             this.groupBox1.Location = new System.Drawing.Point(12, 38);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(117, 79);
+            this.groupBox1.Size = new System.Drawing.Size(174, 79);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Decoding format";
@@ -224,9 +227,9 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openedFileName,
             this.modifiedState});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 695);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1146, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
@@ -247,12 +250,44 @@
             this.importFileDialog.DefaultExt = "*.csv";
             this.importFileDialog.Filter = "CSV files|*.csv|Excel files|*.xlsx";
             // 
+            // langGroupBox
+            // 
+            this.langGroupBox.Controls.Add(this.langComboBox);
+            this.langGroupBox.Location = new System.Drawing.Point(13, 124);
+            this.langGroupBox.Name = "langGroupBox";
+            this.langGroupBox.Size = new System.Drawing.Size(173, 56);
+            this.langGroupBox.TabIndex = 7;
+            this.langGroupBox.TabStop = false;
+            this.langGroupBox.Text = "Language";
+            // 
+            // langComboBox
+            // 
+            this.langComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.langComboBox.FormattingEnabled = true;
+            this.langComboBox.Items.AddRange(new object[] {
+            "English (Default)",
+            "German",
+            "French",
+            "Italian",
+            "Spanish",
+            "Japanese",
+            "Simplified Chinese",
+            "Traditional Chinese",
+            "Korean",
+            "Thai"});
+            this.langComboBox.Location = new System.Drawing.Point(6, 19);
+            this.langComboBox.Name = "langComboBox";
+            this.langComboBox.Size = new System.Drawing.Size(161, 21);
+            this.langComboBox.TabIndex = 0;
+            this.langComboBox.SelectedIndexChanged += new System.EventHandler(this.langComboBox_SelectedIndexChanged);
+            // 
             // MSDEditor
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1146, 717);
+            this.Controls.Add(this.langGroupBox);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dataGridView1);
@@ -261,6 +296,7 @@
             this.Name = "MSDEditor";
             this.ShowIcon = false;
             this.Text = "MSD Editor";
+            this.Load += new System.EventHandler(this.MSDEditor_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -270,6 +306,7 @@
             this.groupBox1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.langGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -298,6 +335,8 @@
         private System.Windows.Forms.ToolStripMenuItem ExportAs;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.OpenFileDialog importFileDialog;
+        private System.Windows.Forms.GroupBox langGroupBox;
+        private System.Windows.Forms.ComboBox langComboBox;
     }
 }
 

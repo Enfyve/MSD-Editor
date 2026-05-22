@@ -36,11 +36,12 @@ namespace MSDEditor
 
             if (parser.IsValidFile())
             {
-                parser.LoadEntries(FF4rb.Checked);
-                dataGridView1.DataSource = parser.Entries;
+                loadedFilePath = filePath;
+
+                LoadAndParse();
+
                 fileLoaded = true;
                 openedFileName.Text = Path.GetFileName(filePath);
-                loadedFilePath = filePath;
             }
             else
             {
@@ -48,10 +49,53 @@ namespace MSDEditor
             }
         }
 
+        private Encoding GetEncodingFromSelection()
+        {
+            if (FF4rb.Checked)
+            {
+                return Encoding.Unicode;
+            }
+            else
+            {
+                // All eureka_xyz files are UTF-8
+                if (Path.GetFileName(loadedFilePath).StartsWith("eureka"))
+                {
+                    return Encoding.UTF8; 
+                }
+                else
+                {
+                    switch ((LanguageMode)langComboBox.SelectedIndex)
+                    {
+                        case LanguageMode.English:
+                        case LanguageMode.German:
+                        case LanguageMode.French:
+                        case LanguageMode.Italian:
+                        case LanguageMode.Spanish:
+                            return Encoding.Default;
+                        case LanguageMode.Japanese:
+                            return Encoding.GetEncoding("SHIFT_JIS");
+                        case LanguageMode.Korean:
+                        case LanguageMode.Traditional_Chinese:
+                        case LanguageMode.Simplified_Chinese:
+                        case LanguageMode.Thai:
+                        default:
+                            return Encoding.UTF8;
+                    }
+                }
+            }
+        }
+
+        private void LoadAndParse()
+        {
+            parser.LoadEntries(GetEncodingFromSelection()); // reload as new format
+            dataGridView1.DataSource = parser.Entries;
+        }
+
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
         }
+
         private void OpenFile_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -82,11 +126,14 @@ namespace MSDEditor
 
         private void DecodingFormatChanged(object sender, EventArgs e)
         {
+
+            // language specific encode/decode support for FF3 only
+            langGroupBox.Enabled = FF3rb.Checked;
+
             if (fileLoaded)
             {
-                parser.LoadEntries(FF4rb.Checked); // reload as new format
-                dataGridView1.DataSource = parser.Entries;
-            }                
+                LoadAndParse();
+            }
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -170,6 +217,18 @@ namespace MSDEditor
         {
             ExportAs.Enabled = fileLoaded;
             ImportFile.Enabled = fileLoaded;
+        }
+
+        private void langComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Re-parse the strings
+            DecodingFormatChanged(sender, e);
+        }
+
+        private void MSDEditor_Load(object sender, EventArgs e)
+        {
+            // default the dropdown to English (there's no way we can infer this from the files themselves)
+            langComboBox.SelectedIndex = (int)LanguageMode.English;
         }
     }
 }

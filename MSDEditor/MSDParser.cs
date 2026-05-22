@@ -32,6 +32,8 @@ namespace MSDEditor
         private string filePath;
         public List<MSDEntry> Entries;
 
+        Encoding currentEncoding;
+
         public MSDParser(string filePath)
         {
             this.filePath = filePath;
@@ -46,8 +48,10 @@ namespace MSDEditor
             }
         }
 
-        public void LoadEntries(bool useUnicode = false)
+        public void LoadEntries(Encoding encoding)
         {
+            currentEncoding = encoding;
+
             Entries = new List<MSDEntry>();
             using (var fs = File.OpenRead(filePath))
             {
@@ -82,16 +86,16 @@ namespace MSDEditor
                     else
                         length = (int)(br.BaseStream.Length - offsets[j]);
 
-                    if (useUnicode)
-                        Entries.Add(new MSDEntry(indexes[j], Encoding.Unicode.GetString(br.ReadBytes(length))));
-                    else
-                        Entries.Add(new MSDEntry(indexes[j], Encoding.UTF8.GetString(br.ReadBytes(length))));
+
+                    var rawBytes = br.ReadBytes(length);
+
+                    Entries.Add(new MSDEntry(indexes[j], encoding.GetString(rawBytes)));
                 }
             }
 
         }
 
-        public bool Export(bool isUnicode)
+        public bool Export(bool modeIsFF4)
         {
             int offset = 16 + (Entries.Count * 12); // 16 bytes header + 12 bytes per entry
             try 
@@ -110,10 +114,10 @@ namespace MSDEditor
                     for (int i = 0; i < Entries.Count; i++)
                     {
                         bw.Write(Entries[i].Id);                    // ID
-                        bw.Write(isUnicode ? FF4Flag : FF3Flag);    // Write flags
+                        bw.Write(modeIsFF4 ? FF4Flag : FF3Flag);    // Write flags
                         bw.Write(offset);
 
-                        int strLength = isUnicode ? Encoding.Unicode.GetByteCount(Entries[i].Text) : Encoding.UTF8.GetByteCount(Entries[i].Text);
+                        int strLength = currentEncoding.GetByteCount(Entries[i].Text);
                         offset += strLength; // increment offset by the length of the text entry
                     }
 
@@ -121,10 +125,9 @@ namespace MSDEditor
                     foreach (var entry in Entries)
                     {
                         byte[] bytes;
-                        if (isUnicode)
-                            bytes = Encoding.Unicode.GetBytes(entry.Text);
-                        else
-                            bytes = Encoding.UTF8.GetBytes(entry.Text);
+
+                        bytes = currentEncoding.GetBytes(entry.Text);
+
                         bw.Write(bytes);
 
                     }
