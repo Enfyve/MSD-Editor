@@ -73,7 +73,7 @@ namespace MSDEditor
                         case LanguageMode.French:
                         case LanguageMode.Italian:
                         case LanguageMode.Spanish:
-                            return Encoding.Default;
+                            return Encoding.GetEncoding("Windows-1252");
                         case LanguageMode.Japanese:
                             return Encoding.GetEncoding("SHIFT_JIS");
                         case LanguageMode.Korean:
