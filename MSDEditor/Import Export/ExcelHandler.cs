@@ -48,6 +48,7 @@ namespace MSDEditor
                         IdCell.DataType = new EnumValue<CellValues>(CellValues.Number);
 
                         TextCell.CellValue = new CellValue(entry.Text.Replace("\n", "\\n").TrimEnd('\0'));
+                        TextCell.CellValue.Space = SpaceProcessingModeValues.Preserve;
                         TextCell.DataType = new EnumValue<CellValues>(CellValues.String);
 
                     }
