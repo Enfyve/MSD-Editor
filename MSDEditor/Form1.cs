@@ -17,6 +17,8 @@ namespace MSDEditor
         
         bool fileLoaded = false;
         string loadedFilePath;
+
+        List<MSDEntry> msdEntryDataSource = new List<MSDEntry>();
         
         public MSDEditor()
         {
@@ -32,16 +34,16 @@ namespace MSDEditor
 
         private void ParseMSD(string filePath)
         {
-            parser = new MSDParser(filePath);
+            parser = new MSDParser();
 
-            if (parser.IsValidFile())
+            if (parser.TryLoadFile(filePath))
             {
                 loadedFilePath = filePath;
+                openedFileName.Text = Path.GetFileName(filePath);
 
-                LoadAndParse();
+                DecodeAndShow();
 
                 fileLoaded = true;
-                openedFileName.Text = Path.GetFileName(filePath);
             }
             else
             {
@@ -85,10 +87,12 @@ namespace MSDEditor
             }
         }
 
-        private void LoadAndParse()
+        private void DecodeAndShow()
         {
-            parser.LoadEntries(GetEncodingFromSelection()); // reload as new format
-            dataGridView1.DataSource = parser.Entries;
+            msdEntryDataSource.Clear();
+            parser.DecodeEntries(GetEncodingFromSelection(), ref msdEntryDataSource);
+
+            dataGridView1.DataSource = new BindingList<MSDEntry>(msdEntryDataSource);
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
@@ -106,13 +110,20 @@ namespace MSDEditor
 
         private void SaveFile_Click(object sender, EventArgs e)
         {
-            if (fileLoaded)
+            if (!fileLoaded) return;
+            
+            var encodeTarget = FF4rb.Checked ? TargetGame.FF4 : TargetGame.FF3;
+
+            parser.EncodeEntries(msdEntryDataSource, GetEncodingFromSelection(), encodeTarget);
+
+            if (parser.TryWriteFile(loadedFilePath))
             {
-                if (parser.Export(FF4rb.Checked))
-                    modifiedState.Text = "";
-                else
-                    MessageBox.Show("Could not save file");
-            }
+                modifiedState.Text = "";
+            }                    
+            else
+            {
+                MessageBox.Show("Could not save file");
+            }   
         }
 
         private void CloseFile_Click(object sender, EventArgs e)
@@ -121,29 +132,28 @@ namespace MSDEditor
             fileLoaded = false;
             dataGridView1.DataSource = new List<MSDEntry>();
             openedFileName.Text = "no file loaded";
-
+            parser = null;
         }
 
         private void DecodingFormatChanged(object sender, EventArgs e)
         {
-
             // language specific encode/decode support for FF3 only
             langGroupBox.Enabled = FF3rb.Checked;
 
             if (fileLoaded)
             {
-                LoadAndParse();
+                DecodeAndShow();
             }
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            string newValue = (dataGridView1.DataSource as List<MSDEntry>)[e.RowIndex].Text;
+            string newValue = (dataGridView1.DataSource as BindingList<MSDEntry>)[e.RowIndex].Text;
 
             // Restore null byte padding if not present
             if (!newValue.EndsWith("\0\0"))
             {
-                (dataGridView1.DataSource as List<MSDEntry>)[e.RowIndex].Text = newValue + "\0\0";
+                (dataGridView1.DataSource as BindingList<MSDEntry>)[e.RowIndex].Text = newValue + "\0\0";
             }
 
             modifiedState.Text = "(modified)";
@@ -162,11 +172,11 @@ namespace MSDEditor
                 {
                     case ".csv":
                         CSVHandler csvHandler = new CSVHandler();
-                        exportSuccess = csvHandler.Export(exportFileDialog.FileName, parser.Entries);
+                        exportSuccess = csvHandler.Export(exportFileDialog.FileName, msdEntryDataSource);
                         break;
                     case ".xlsx":
                         ExcelHandler excelHandler = new ExcelHandler();
-                        exportSuccess = excelHandler.Export(exportFileDialog.FileName, parser.Entries);
+                        exportSuccess = excelHandler.Export(exportFileDialog.FileName, msdEntryDataSource);
                         break;
                     default:
                         MessageBox.Show("File format not supported");
@@ -207,8 +217,8 @@ namespace MSDEditor
                     MessageBox.Show("There was a problem importing the file.");
                 else
                 {
-                    parser.Entries = entries;
-                    dataGridView1.DataSource = parser.Entries;
+                    msdEntryDataSource = entries;
+                    dataGridView1.DataSource = new BindingList<MSDEntry>(msdEntryDataSource);
                 }                    
             }
         }

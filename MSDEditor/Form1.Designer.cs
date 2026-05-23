@@ -30,8 +30,6 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.gridColIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gridColText = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +50,8 @@
             this.importFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.langGroupBox = new System.Windows.Forms.GroupBox();
             this.langComboBox = new System.Windows.Forms.ComboBox();
+            this.gridColText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gridColIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -86,22 +86,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(942, 654);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
-            // 
-            // gridColIndex
-            // 
-            this.gridColIndex.DataPropertyName = "Id";
-            this.gridColIndex.HeaderText = "Id";
-            this.gridColIndex.Name = "gridColIndex";
-            this.gridColIndex.ReadOnly = true;
-            this.gridColIndex.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // gridColText
-            // 
-            this.gridColText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.gridColText.DataPropertyName = "Text";
-            this.gridColText.HeaderText = "Text";
-            this.gridColText.Name = "gridColText";
-            this.gridColText.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // menuStrip1
             // 
@@ -282,6 +266,24 @@
             this.langComboBox.TabIndex = 0;
             this.langComboBox.SelectedIndexChanged += new System.EventHandler(this.langComboBox_SelectedIndexChanged);
             // 
+            // gridColText
+            // 
+            this.gridColText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.gridColText.DataPropertyName = "Text";
+            this.gridColText.FillWeight = 177.7531F;
+            this.gridColText.HeaderText = "Text";
+            this.gridColText.Name = "gridColText";
+            this.gridColText.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // gridColIndex
+            // 
+            this.gridColIndex.DataPropertyName = "Id";
+            this.gridColIndex.FillWeight = 22.24694F;
+            this.gridColIndex.HeaderText = "Id";
+            this.gridColIndex.Name = "gridColIndex";
+            this.gridColIndex.ReadOnly = true;
+            this.gridColIndex.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // MSDEditor
             // 
             this.AllowDrop = true;
@@ -329,8 +331,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel openedFileName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gridColIndex;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gridColText;
         private System.Windows.Forms.ToolStripStatusLabel modifiedState;
         private System.Windows.Forms.ToolStripMenuItem ImportFile;
         private System.Windows.Forms.ToolStripMenuItem ExportAs;
@@ -338,6 +338,8 @@
         private System.Windows.Forms.OpenFileDialog importFileDialog;
         private System.Windows.Forms.GroupBox langGroupBox;
         private System.Windows.Forms.ComboBox langComboBox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn gridColIndex;
+        private System.Windows.Forms.DataGridViewTextBoxColumn gridColText;
     }
 }
 
