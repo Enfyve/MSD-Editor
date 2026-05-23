@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Import Export\IExportable.cs" />
     <Compile Include="Import Export\IImportable.cs" />
+    <Compile Include="MSDEntry.cs" />
     <Compile Include="MSDParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
