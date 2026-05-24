@@ -3,7 +3,7 @@ using System;
 
 namespace MSDEditor
 {
-    class MSDEntry
+    public class MSDEntry
     {
         [Name("Id"), Index(0)]
         public UInt32 Id { get; set; }
@@ -15,6 +15,22 @@ namespace MSDEditor
         {
             this.Id = Id;
             this.Text = Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return (obj as MSDEntry).Id == Id && 
+                (obj as MSDEntry).Text == Text;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Text);
         }
     }
 }

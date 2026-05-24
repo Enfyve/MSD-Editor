@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MSDEditor
 {
-    class MSDParser
+    public class MSDParser
     {
         private static readonly byte[] MSD_Magic = { 0x4D, 0x53, 0x44, 0x41, 0x00, 0x00, 0x01, 0x00 }; // "MSDA" + unknown flags
         private const UInt32 FF3_Flag = 0xCCCC0101;
@@ -31,6 +31,8 @@ namespace MSDEditor
         /// <returns>true if the file contains the expected magic and the MemoryStream is prepared, false if otherwise</returns>
         public bool TryLoadFile(string filePath)
         {
+            msdContentStream.Position = 0;
+
             try
             {
                 using (var file = File.OpenRead(filePath))
@@ -113,8 +115,9 @@ namespace MSDEditor
         {
             // We are assuming that the Count in 'entries' remains the same as 'entryCount'
 
-            // Nothing in the header changes, skip past it
+            // Nothing in the header changes, discard the rest and advance to the end of it.
             msdContentStream.Position = Header_Length;
+            msdContentStream.SetLength(Header_Length);
 
             int textPtr = Header_Length + (entryCount * 12); // each item in the items table requires 12 bytes
 

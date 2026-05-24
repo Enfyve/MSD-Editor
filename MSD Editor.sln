@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30517.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37216.2 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSDEditor", "MSDEditor\MSDEditor.csproj", "{05DDE12E-0D19-42FE-87F2-08FD0FCCDA7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSDEditorTests", "MSDEditorTests\MSDEditorTests.csproj", "{376D44D5-3243-4751-B308-A9CA4D4B8EE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{05DDE12E-0D19-42FE-87F2-08FD0FCCDA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05DDE12E-0D19-42FE-87F2-08FD0FCCDA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05DDE12E-0D19-42FE-87F2-08FD0FCCDA7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376D44D5-3243-4751-B308-A9CA4D4B8EE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376D44D5-3243-4751-B308-A9CA4D4B8EE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376D44D5-3243-4751-B308-A9CA4D4B8EE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376D44D5-3243-4751-B308-A9CA4D4B8EE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
